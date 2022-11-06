@@ -8,7 +8,7 @@ data Options = Options
     inputType :: InputType
   }
 
-data Day = Day {x :: Int} deriving Show
+data Day = Day4 deriving Show
 
 data InputType = InputFile FilePath | InputString String deriving Show
 
@@ -28,22 +28,20 @@ inputTypeParser = inputFileParser <|> inputStringParser
           (long "string" <> short 's' <> help "Raw input string")
 
 
-validateDay::String -> Either String Int
+validateDay::String -> Either String Day
 validateDay d
- | n > 0 && n < 26 = Right (n)
- | otherwise = Left ("Invalid input for day " ++ d)
- where n = read d -- Probably I shouldn't use read
+ | d == "4" = Right(Day4)
+ | otherwise = Left("Invalid input day: "++ d)
 
 
 inputDay :: Parser Day
-inputDay = Day <$> argument (eitherReader validateDay) (metavar "DAY" <> help "Exercise day to run")
-
+inputDay = argument (eitherReader validateDay) (metavar "DAY" <> help "Exercise day to run")
 
 options :: Parser Options
 options = Options <$> inputDay <*> inputTypeParser
 
-cli :: IO ()
-cli = run =<< execParser opts
+entryp :: IO ()
+entryp = run =<< execParser opts
   where
     opts = info (options <**> helper)
      (fullDesc
@@ -52,8 +50,6 @@ cli = run =<< execParser opts
      )
 
 run :: Options -> IO ()
-run (Options d (InputFile f)) = putStr $ "Running day" ++ (show d) ++ " with input file: " ++ f
-run (Options d (InputString s)) = putStr $ "Running day" ++ (show d) ++ " with input string: " ++ s
-
-entryp:: IO ()
-entryp = AOC2021.Day4.run "resources/2021/day4_sample.txt"
+run (Options Day4 (InputFile f)) =  AOC2021.Day4.run f
+run (Options d (InputFile f)) = putStr $ "Running year  day " ++ (show d) ++ " with input file: " ++ f
+run (Options d (InputString s)) = putStr $ "Running day " ++ (show d) ++ " with input string: " ++ s

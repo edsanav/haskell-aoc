@@ -5,7 +5,6 @@ module AOC2021.Day4 (run) where
 import Data.Function (on)
 import Data.List (groupBy, intercalate, sortBy)
 import qualified Data.Text as T
-import System.IO
 
 
 type Checkeable = [(Int, Bool)]
