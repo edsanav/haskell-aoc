@@ -28,6 +28,7 @@ library
       AOC2021.Day4
       AOC2022.Day1
       Command
+      Utils
   other-modules:
       Paths_haskell_aoc
   hs-source-dirs:

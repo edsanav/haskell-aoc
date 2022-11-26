@@ -4,7 +4,7 @@ module AOC2021.Day4 (run) where
 
 import Data.Function (on)
 import Data.List (groupBy, intercalate, sortBy)
-import qualified Data.Text as T
+import Utils (splitStr)
 
 
 type Checkeable = [(Int, Bool)]
@@ -39,9 +39,6 @@ draw :: Int -> Panel -> Panel
 draw n p =
   let mark (x, b) = if x == n then (x, True) else (x, b)
    in [map mark row | row <- p]
-
-splitStr :: String -> String -> [String]
-splitStr s x = map T.unpack $ T.splitOn (T.pack s) (T.pack x)
 
 readMyContent :: String -> ([Int], [Panel])
 readMyContent fileContent =
