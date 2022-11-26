@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Lib
+import Command
 
 -- https://www.stephanschiffels.de/posts/2021-03-24-Haskell-CLI/
 -- https://www.reddit.com/r/haskell/comments/capuz7/multiple_executable_in_project/

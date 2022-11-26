@@ -1,14 +1,15 @@
-module Lib (entryp) where
+module Command (entryp) where
   
 import qualified AOC2021.Day4
+import qualified AOC2022.Day1
 import Options.Applicative
 
 data Options = Options
-  { day :: Day,
+  { exercise :: Exercise,
     inputType :: InputType
   }
 
-data Day = Day4 deriving Show
+type Exercise = String -> IO ()
 
 data InputType = InputFile FilePath | InputString String deriving Show
 
@@ -28,17 +29,18 @@ inputTypeParser = inputFileParser <|> inputStringParser
           (long "string" <> short 's' <> help "Raw input string")
 
 
-validateDay::String -> Either String Day
-validateDay d
- | d == "4" = Right(Day4)
- | otherwise = Left("Invalid input day: "++ d)
+validateExercise::String -> Either String Exercise
+validateExercise exStr
+ | exStr == "2021-4" = Right(AOC2021.Day4.run)
+ | exStr == "2022-1" = Right(AOC2022.Day1.run)
+ | otherwise = Left("Invalid input exercise:" ++ exStr)
 
 
-inputDay :: Parser Day
-inputDay = argument (eitherReader validateDay) (metavar "DAY" <> help "Exercise day to run")
+inputExercise :: Parser Exercise
+inputExercise = argument (eitherReader validateExercise) (metavar "DAY" <> help "Exercise day to run in format YYYY-DD")
 
 options :: Parser Options
-options = Options <$> inputDay <*> inputTypeParser
+options = Options <$> inputExercise <*> inputTypeParser
 
 entryp :: IO ()
 entryp = run =<< execParser opts
@@ -50,6 +52,5 @@ entryp = run =<< execParser opts
      )
 
 run :: Options -> IO ()
-run (Options Day4 (InputFile f)) =  AOC2021.Day4.run f
-run (Options d (InputFile f)) = putStr $ "Running year  day " ++ (show d) ++ " with input file: " ++ f
-run (Options d (InputString s)) = putStr $ "Running day " ++ (show d) ++ " with input string: " ++ s
+run (Options ex (InputFile f)) =  readFile f >>= ex
+run (Options ex (InputString s)) =  ex s

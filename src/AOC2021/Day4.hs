@@ -82,9 +82,8 @@ loop (x:xs) ps step =
 formatPanel:: Panel -> String
 formatPanel p = Data.List.intercalate "\n" (map show p)
 
-run :: FilePath -> IO ()
-run fName = do
-    mydata <- readFile fName
+run :: String -> IO ()
+run mydata = do
     let inputList = splitStr "\n\n" mydata
         (instructions, panels) = readMyContent mydata
         loadedGame = loop instructions panels

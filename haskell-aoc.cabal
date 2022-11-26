@@ -26,7 +26,8 @@ source-repository head
 library
   exposed-modules:
       AOC2021.Day4
-      Lib
+      AOC2022.Day1
+      Command
   other-modules:
       Paths_haskell_aoc
   hs-source-dirs:
