@@ -32,7 +32,7 @@ inputTypeParser = inputFileParser <|> inputStringParser
 validateExercise::String -> Either String Exercise
 validateExercise exStr
  | (exStr == "2021-4") || (exStr == "2021-04") = Right(AOC2021.Day4.run)
- | (exStr == "2021-1") || (exStr == "2021-01") = Right(AOC2022.Day1.run)
+ | (exStr == "2022-1") || (exStr == "2022-01") = Right(AOC2022.Day1.run)
  | otherwise = Left("Invalid input exercise:" ++ exStr)
 
 
