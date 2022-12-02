@@ -27,6 +27,7 @@ library
   exposed-modules:
       AOC2021.Day4
       AOC2022.Day1
+      AOC2022.Day2
       Command
       Utils
   other-modules:

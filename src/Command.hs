@@ -2,6 +2,7 @@ module Command (entryp) where
   
 import qualified AOC2021.Day4
 import qualified AOC2022.Day1
+import qualified AOC2022.Day2
 import Options.Applicative
 
 data Options = Options
@@ -33,6 +34,7 @@ validateExercise::String -> Either String Exercise
 validateExercise exStr
  | (exStr == "2021-4") || (exStr == "2021-04") = Right(AOC2021.Day4.run)
  | (exStr == "2022-1") || (exStr == "2022-01") = Right(AOC2022.Day1.run)
+ | (exStr == "2022-2") || (exStr == "2022-02") = Right(AOC2022.Day2.run)
  | otherwise = Left("Invalid input exercise:" ++ exStr)
 
 
