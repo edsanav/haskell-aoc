@@ -4,7 +4,7 @@ module AOC2021.Day4 (run) where
 
 import Data.Function (on)
 import Data.List (groupBy, intercalate, sortBy)
-import Utils (splitStr)
+import Data.List.Split (splitOn)
 
 
 type Checkeable = [(Int, Bool)]
@@ -42,9 +42,9 @@ draw n p =
 
 readMyContent :: String -> ([Int], [Panel])
 readMyContent fileContent =
-  let inputList = splitStr "\n\n" fileContent
+  let inputList = splitOn "\n\n" fileContent
       readNumsLine f inp = map (read :: String -> Int) (f inp)
-      numbers = readNumsLine (splitStr ",") (head inputList)
+      numbers = readNumsLine (splitOn ",") (head inputList)
       --      readPanel pStr = map (\x -> (x, False)) $ map readNumsLine $ lines pStr
       readPanel pStr = map (map (,False) . readNumsLine words) (lines pStr)
    in (numbers, map readPanel (tail inputList))
@@ -81,7 +81,7 @@ formatPanel p = Data.List.intercalate "\n" (map show p)
 
 run :: String -> IO ()
 run mydata = do
-    let inputList = splitStr "\n\n" mydata
+    let inputList = splitOn "\n\n" mydata
         (instructions, panels) = readMyContent mydata
         loadedGame = loop instructions panels
 --        panel1 = [ [(2,False), (0, True)],   [(14,False), (1, False)] ]

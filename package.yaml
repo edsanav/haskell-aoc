@@ -24,6 +24,7 @@ dependencies:
 - text
 - optparse-applicative
 - containers
+- split
 
 ghc-options:
 - -Wall

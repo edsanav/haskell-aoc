@@ -1,6 +1,6 @@
 module AOC2022.Day2 (run) where
 
-import Utils (formatResults, splitStr)
+import Utils (formatResults)
 
 
 data Choice = Rock | Paper | Scissors deriving (Show, Eq)

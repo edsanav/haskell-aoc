@@ -1,9 +1,10 @@
 module Command (entryp) where
   
-import qualified AOC2021.Day4 (run)
-import qualified AOC2022.Day1 (run)
-import qualified AOC2022.Day2 (run)
+import qualified AOC2021.Day4
+import qualified AOC2022.Day1
+import qualified AOC2022.Day2
 import qualified AOC2022.Day3
+import qualified AOC2022.Day4
 
 import Options.Applicative
 
@@ -38,6 +39,7 @@ validateExercise exStr
  | (exStr == "2022-1") || (exStr == "2022-01") = Right(AOC2022.Day1.run)
  | (exStr == "2022-2") || (exStr == "2022-02") = Right(AOC2022.Day2.run)
  | (exStr == "2022-3") || (exStr == "2022-03") = Right(AOC2022.Day3.run)
+ | (exStr == "2022-4") || (exStr == "2022-04") = Right(AOC2022.Day4.run)
  | otherwise = Left("Invalid input exercise:" ++ exStr)
 
 

@@ -29,6 +29,7 @@ library
       AOC2022.Day1
       AOC2022.Day2
       AOC2022.Day3
+      AOC2022.Day4
       Command
       Utils
   other-modules:
@@ -40,6 +41,7 @@ library
       base >=4.7 && <5
     , containers
     , optparse-applicative
+    , split
     , text
   default-language: Haskell2010
 
@@ -53,6 +55,7 @@ executable aoc
     , containers
     , haskell-aoc
     , optparse-applicative
+    , split
     , text
   default-language: Haskell2010
 
@@ -69,5 +72,6 @@ test-suite haskell-aoc-test
     , containers
     , haskell-aoc
     , optparse-applicative
+    , split
     , text
   default-language: Haskell2010
