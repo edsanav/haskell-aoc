@@ -11,18 +11,17 @@ type MoveFunction = Int -> String -> String -> (String, String)
 
 -- TODO refactor this abomination
 parseCrates::String -> M.Map Char [Char]
-parseCrates inStr = foldr enterLine  M.empty (reverse cratesLines)
-  where (idsLine:cratesLines) = reverse $ lines inStr
-        idxRef = filter (isDigit.snd) $ zip [0..] idsLine
+parseCrates inStr = foldr enterLine  M.empty (init $ lines inStr)
+  where idxRef = filter (isDigit.snd) $ zip [0..] (last $ lines inStr)
         addToStore (_,' ') store =  store
         addToStore (k,v) store =  M.insert k (v : (M.findWithDefault [] k store)) store
-        enterLine lineStr store = foldr (\a st -> addToStore a st) store $ toInsertInput idxRef lineStr
-        toInsertInput refs line = map (\(idx, k) -> (k, line !! idx)) refs
+        enterLine lineStr store = foldr addToStore store $ map (\(idx, k) -> (k, lineStr !! idx)) idxRef
 
-parseMove::String -> (Int, Char, Char)
+parseMove::String -> Maybe (Int, Char, Char)
 parseMove  = toOutput.toList
   where toList = catMaybes. map (readMaybe ::String -> Maybe Int) . words
-        toOutput (x:y:z:[]) = (x, intToDigit y, intToDigit z)
+        toOutput (x:y:z:[]) = Just (x, intToDigit y, intToDigit z)
+        toOutput _ = Nothing
 
 move1by1::Int -> String -> String -> (String, String)
 move1by1 0 x y = (x, y)
@@ -44,7 +43,7 @@ operate::MoveFunction -> String -> String
 operate moveFn x = M.foldr ((:).head) [] endState
   where (cratesStr:movesStr:_) = splitOn "\n\n" x
         initialState = parseCrates cratesStr
-        moves = map parseMove $ lines movesStr
+        moves = catMaybes.map parseMove $ lines movesStr
         endState = foldr (\(n,source,dest) b -> move moveFn n source dest b) initialState $ reverse moves
 
 ex1:: String -> String
