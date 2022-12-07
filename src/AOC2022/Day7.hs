@@ -5,12 +5,21 @@ import Data.List (isPrefixOf)
 import Data.List.Split (splitOn, split, keepDelimsL, whenElt)
 import Debug.Trace
 
-type Path = [String]
-type Content = [FS]
-
-data FS = File String Int Path | Directory String Content Path deriving (Show, Eq, Ord)
-
 -- note "error with [IMPOSSIBLE] is just to silence pattern matching...code shohuld not go in there"
+
+type Path = [String]
+
+type FS = FileTree Int
+
+data FileTree a = File String a Path | Directory String [FileTree a] Path 
+  deriving (Show, Eq, Ord)
+
+instance Foldable FileTree where
+  foldr f z (File _ a _) = f a z
+  foldr f z (Directory _ content _) = foldr f z (extractContent content)
+    where extractContent [] = []
+          extractContent (File _ a _:xs) = a:extractContent xs
+          extractContent (Directory _ xxs _:xs) = extractContent xxs ++ extractContent xs
 
 readItem:: Path -> String -> FS
 readItem path l = case words l of
@@ -20,7 +29,7 @@ readItem path l = case words l of
 
 insert::Path -> [String] -> FS -> FS
 insert currentPath linesBlock (Directory name content path)
-  | currentPath == (name:path) =  traceShow "MATCH2!" $ Directory name (map (readItem (name:path)) linesBlock) path
+  | currentPath == (name:path) = Directory name (map (readItem (name:path)) linesBlock) path
   | otherwise = Directory name (map (insert currentPath linesBlock)  content) path
 insert _ _ fs = fs
 
@@ -42,8 +51,14 @@ buildFS path (x:remaining) fs = case (words x) of
   _ -> error $ "[IMPOSSIBLE] Not command when expecting command: " ++ x
 buildFS _ [] fs = fs
 
-ex1 :: String -> FS
-ex1 x = buildFS [] (lines x) (Directory "/" [] [])
+sumContents :: [FS] -> [Int]
+sumContents [] = []
+sumContents (File _ _ _:xs) = sumContents xs
+sumContents (dir@(Directory _ xxs _):xs) = [foldr (+) 0 dir] ++ sumContents xxs ++ sumContents xs
+
+ex1 :: String -> Int
+ex1 x = sum. filter (<100000) $ sumContents [fsTree]
+  where fsTree = buildFS [] (lines x) (Directory "/" [] [])
 
 ex2 :: String -> [String]
 ex2 x = []
@@ -51,21 +66,3 @@ ex2 x = []
 
 run :: String -> IO ()
 run x = putStr $ formatResults (ex1 x) (ex2 x)
-
-
-bla = Directory "/" [
-          Directory "a" [
-            Directory "e" [
-              File "i" 584 ["e","a","/"]
-            ] ["a","/"],
-            File "f" 29116 ["a","/"],
-            File "g" 2557 ["a","/"],
-            File "h.lst" 62596 ["a","/"]] ["/"],
-          File "b.txt" 14848514 ["/"],
-          File "c.dat" 8504156 ["/"],
-          Directory "d" [
-            File "j" 4060174 ["d","/"],
-            File "d.log" 8033020 ["d","/"],
-            File "d.ext" 5626152 ["d","/"],
-            File "k" 7214296 ["d","/"]] ["/"]
-       ] ["/"]

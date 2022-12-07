@@ -33,7 +33,6 @@ library
       AOC2022.Day5
       AOC2022.Day6
       AOC2022.Day7
-      AOC2022.Day7copy
       Command
       Utils
   other-modules:
