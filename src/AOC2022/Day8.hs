@@ -1,7 +1,6 @@
 module AOC2022.Day8 (run) where
 
 import qualified Data.Map as M
-import Debug.Trace
 import Data.Char
 import Utils (formatResults)
 
