@@ -1,6 +1,6 @@
 module AOC2022.Day3 (run) where
 
-import Utils (formatResults)
+import Utils (formatResults, splitEveryN)
 import Data.Char
 import qualified Data.Set as S
 
@@ -16,11 +16,6 @@ tupleToList (x,y) = [x,y]
 
 splitInTwo::[a] -> ([a],[a])
 splitInTwo xs = splitAt (div (length xs) 2) xs
-
-splitEveryN::Int -> [a] -> [[a]]
-splitEveryN n x = case splitAt n x of
-  (_, []) -> [x]
-  (xs, ys) -> xs:(splitEveryN n ys)
 
 intersections::(Ord a) => [S.Set a] -> S.Set a
 intersections [] = S.empty
