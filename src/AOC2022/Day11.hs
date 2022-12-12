@@ -4,15 +4,12 @@ module AOC2022.Day11 (run) where
 
 import Data.Char
 import Data.Foldable (toList)
-import Data.List (sortOn)
 import Data.List
 import Data.Ord
 import Data.List.Split (splitOn)
 import qualified Data.Map as M
 import qualified Data.Sequence as Sq
-import Debug.Trace (traceShow)
 import Utils (formatResults)
-import Data.Ord (Down, Down)
 
 type MonkeyMap = M.Map Int Monkey
 
@@ -96,10 +93,10 @@ ex1 x = first * second
     (first:second:_) = sortOn Down . map (inspected.snd) $ M.toList (runRounds 20 monkeys)
 
 ex2 :: String -> Int
-ex2 x = traceShow l $ first * second
+ex2 x = first * second
   where
-    monkeys = parseMonkeys (flip div 3) x
-    l@(first:second:_) = sortOn Down . map (inspected.snd) $ M.toList (runRounds 1000 monkeys)
+    monkeys = parseMonkeys (flip mod (2 * 13 * 5 * 3 * 11 * 17 * 7 * 19)) x
+    (first:second:_) = sortOn Down . map (inspected.snd) $ M.toList (runRounds 10000 monkeys)
 
 run :: String -> IO ()
 run x = putStr $ formatResults (ex1 x) (ex2 x)
