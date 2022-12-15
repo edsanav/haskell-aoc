@@ -25,6 +25,9 @@ dependencies:
 - optparse-applicative
 - containers
 - split
+- aeson
+- bytestring
+- utf8-string
 
 ghc-options:
 - -Wall

@@ -29,6 +29,7 @@ library
       AOC2022.Day1
       AOC2022.Day10
       AOC2022.Day11
+      AOC2022.Day13
       AOC2022.Day2
       AOC2022.Day3
       AOC2022.Day4
@@ -45,11 +46,14 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
+    , bytestring
     , containers
     , optparse-applicative
     , split
     , text
+    , utf8-string
   default-language: Haskell2010
 
 executable aoc
@@ -58,12 +62,15 @@ executable aoc
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
+    , bytestring
     , containers
     , haskell-aoc
     , optparse-applicative
     , split
     , text
+    , utf8-string
   default-language: Haskell2010
 
 test-suite haskell-aoc-test
@@ -75,10 +82,13 @@ test-suite haskell-aoc-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
+    , bytestring
     , containers
     , haskell-aoc
     , optparse-applicative
     , split
     , text
+    , utf8-string
   default-language: Haskell2010
