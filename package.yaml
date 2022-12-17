@@ -28,6 +28,8 @@ dependencies:
 - aeson
 - bytestring
 - utf8-string
+- vector
+- scientific
 
 ghc-options:
 - -Wall
