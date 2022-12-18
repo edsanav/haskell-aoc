@@ -12,6 +12,7 @@ import qualified AOC2022.Day8
 import qualified AOC2022.Day9
 import qualified AOC2022.Day10
 import qualified AOC2022.Day11
+import qualified AOC2022.Day13
 
 import Options.Applicative
 
@@ -54,6 +55,7 @@ validateExercise exStr
  | (exStr == "2022-9") || (exStr == "2022-09") = Right(AOC2022.Day9.run)
  | (exStr == "2022-10") = Right(AOC2022.Day10.run)
  | (exStr == "2022-11") = Right(AOC2022.Day11.run)
+ | (exStr == "2022-13") = Right(AOC2022.Day13.run)
  | otherwise = Left("Invalid input exercise:" ++ exStr)
 
 
