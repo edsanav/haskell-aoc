@@ -10,6 +10,7 @@ import  Data.Maybe
 import qualified Data.Vector as V
 import qualified Data.Scientific as Sc
 import Data.List.Split (splitOn)
+import Data.List (sort, elemIndex)
 
 import qualified Data.ByteString.Lazy.UTF8 as BLU -- from utf8-string
 
@@ -26,7 +27,7 @@ instance Ord a => Ord (RTree a) where
   compare (Node []) (Node []) = EQ
   compare (Node (_:_)) (Node []) = GT
   compare (Node (x:xs)) (Node (y:ys))
-    | x == y = compare (Node xs) (Node ys)
+    | compare x y == EQ = compare (Node xs) (Node ys)
     | otherwise = compare x y
   compare (Leaf a1) node@(Node _) = compare (Node [Leaf a1]) node
   compare node@(Node _) (Leaf a2) = compare node (Node [Leaf a2])
@@ -42,9 +43,10 @@ ex1  = sum. map (fst). filter (snd) . zip [1..] . map comparePackets .  splitOn 
   where comparePackets = (\case (x:y:_) -> x < y ).map readTree . lines
 
 ex2:: String -> Int
-ex2 x = 1
+ex2 = product . indexes dividers . allPackets
+  where dividers = map readTree ["[[2]]", "[[6]]"]
+        allPackets = sort . (++) dividers . map readTree . filter (/="") . lines
+        indexes divs allP = map ((+) 1 . fromJust . flip elemIndex allP) divs 
 
 run :: String -> IO()
 run x = putStr $ formatResults (ex1 x) (ex2 x)
-
--- 6018
