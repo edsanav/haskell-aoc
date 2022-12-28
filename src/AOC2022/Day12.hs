@@ -7,6 +7,7 @@ import Debug.Trace (traceShow)
 import Data.Char
 import Data.Maybe
 import qualified Data.Set as S
+import Data.List (sort)
 
 type Coord = (Int, Int)
 type Node = (Coord, Char)
@@ -20,8 +21,8 @@ parseGrid = M.fromList.concat.idxLineTocoords.indexLines
    indexLines = zip [(0::Int)..] . lines
    idxLineTocoords = map (\(y, line) -> map (\(x, char)-> ((x,y), ((x,y), char))) $ zip [(0::Int)..] line)
 
-getOneWithVal::Char -> M.Map Coord Node -> Node
-getOneWithVal c = head. M.elems . M.filter ((==c). snd)
+getAllWithVals::Char -> M.Map Coord Node -> [Node]
+getAllWithVals c = M.elems . M.filter ((==c). snd)
 
 
 findNeighbours:: M.Map Coord Node -> Node -> [Node]
@@ -55,16 +56,19 @@ bfs graph visited ((node,distance):xs)
       neighs = map (\n-> (n,distance+1)) $ graph M.! node
 
 
-
 ex1 :: String -> Maybe Int
 ex1 x = bfs graph S.empty [(start,0)]
   where
     grid = parseGrid x
-    start = getOneWithVal 'S' grid
+    start = head $ getAllWithVals 'S' grid
     graph = buildGraph grid
 
-ex2 :: String -> Int
-ex2 x = 0
+ex2 :: String -> Maybe Int
+ex2 x = fmap (head.sort) . sequence . filter isJust $ map (\start -> bfs graph S.empty [(start, 0)]) potentialStarts
+  where 
+    grid = parseGrid x
+    potentialStarts = getAllWithVals 'a' grid
+    graph = buildGraph grid
 
 run :: String -> IO()
 run x = putStr $ formatResults (ex1 x) (ex2 x)
