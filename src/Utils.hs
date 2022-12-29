@@ -1,5 +1,4 @@
-module Utils (formatResults, splitEveryN ) where
-import qualified Data.Text as T
+module Utils (formatResults, splitEveryN, toTuple, genList) where
 
 -- https://stackoverflow.com/questions/3232074/what-is-the-best-way-to-convert-string-to-bytestring
 
@@ -10,3 +9,12 @@ splitEveryN::Int -> [a] -> [[a]]
 splitEveryN n x = case splitAt n x of
   (_, []) -> [x]
   (xs, ys) -> xs:(splitEveryN n ys)
+
+toTuple::[a] -> (a,a)
+toTuple (x:y:_) = (x,y)
+toTuple _ = error $ "Trying to convert a list shorter than 2 to a tuple"
+
+genList::Int->Int->[Int]
+genList x1 x2 = if (x1<=x2)
+                 then [x1..x2]
+                 else [x1,x1-1..x2]

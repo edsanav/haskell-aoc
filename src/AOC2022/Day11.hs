@@ -4,12 +4,12 @@ module AOC2022.Day11 (run) where
 
 import Data.Char
 import Data.Foldable (toList)
-import Data.List
+import Data.List (sortOn, intercalate)
 import Data.Ord
 import Data.List.Split (splitOn)
 import qualified Data.Map as M
 import qualified Data.Sequence as Sq
-import Utils (formatResults)
+import Utils (formatResults, toTuple)
 
 type MonkeyMap = M.Map Int Monkey
 
@@ -29,7 +29,10 @@ instance Show Monkey where
     where
       itemListStr = intercalate "," $ map show $ toList (items m)
 
--- worryFunction flip div 3
+-- There has to be a better way of doing this
+dummyParse::[String] -> (String,String,String,String,String,String)
+dummyParse (x1 : x2 : x3 : x4 : x5 : x6: []) = (x1,x2,x3,x4,x5,x6)
+dummyParse _ = error "Invalid number of arguments to convert to tuple"
 
 parseMonkey :: (Int -> Int) -> String -> Monkey
 parseMonkey worryFunction monkeyStr =
@@ -41,7 +44,7 @@ parseMonkey worryFunction monkeyStr =
       inspected = 0
     }
   where
-    (idLine : itemsLine : operationLine : checkLine : trueLine : falseLine : _) = lines monkeyStr
+    (idLine ,itemsLine, operationLine, checkLine,  trueLine , falseLine) = dummyParse $ lines monkeyStr
     readNum = (read :: String -> Int) . filter isDigit
     readNumList = map (read :: String -> Int) . splitOn "," . filter (\c -> isDigit c || c == ',')
     parseOperation lnStr = worryFunction . (op :: Int -> Int)
@@ -79,6 +82,7 @@ runMonkey mRef monkey@(Monkey mId (x Sq.:<| xs) op computeTarget oldInspected) =
     monkeyAfter = monkey {items = xs, inspected=oldInspected+1}
     tMonkeyAfter = tMonkey {items = (items tMonkey Sq.:|> itemAfterInspect)}
     updatedMonkeyRef = M.union (M.fromList [(mId, monkeyAfter), (tId, tMonkeyAfter)]) mRef
+runMonkey _ _ = error "Unexpected monkey input"
 
 runRound :: MonkeyMap -> MonkeyMap
 runRound monkeys = foldl (\mRef a -> runMonkey mRef (mRef M.! a)) monkeys [0 .. (length monkeys)-1]
@@ -90,13 +94,13 @@ ex1 :: String -> Int
 ex1 x = first * second
   where
     monkeys = parseMonkeys (flip div 3) x
-    (first:second:_) = sortOn Down . map (inspected.snd) $ M.toList (runRounds 20 monkeys)
+    (first,second) = toTuple.sortOn Down . map (inspected.snd) $ M.toList (runRounds 20 monkeys)
 
 ex2 :: String -> Int
 ex2 x = first * second
   where
     monkeys = parseMonkeys (flip mod (2 * 13 * 5 * 3 * 11 * 17 * 7 * 19)) x
-    (first:second:_) = sortOn Down . map (inspected.snd) $ M.toList (runRounds 10000 monkeys)
+    (first,second) = toTuple.sortOn Down . map (inspected.snd) $ M.toList (runRounds 10000 monkeys)
 
 run :: String -> IO ()
 run x = putStr $ formatResults (ex1 x) (ex2 x)

@@ -1,6 +1,6 @@
 module AOC2022.Day5 (run) where
 
-import Utils (formatResults)
+import Utils (formatResults, toTuple)
 import qualified Data.Map as M
 import Text.Read (readMaybe)
 import Data.Char
@@ -41,7 +41,7 @@ move fn n sourceK destK store = M.insert destK destAfter $ M.insert sourceK sour
 
 operate::MoveFunction -> String -> String
 operate moveFn x = M.foldr ((:).head) [] endState
-  where (cratesStr:movesStr:_) = splitOn "\n\n" x
+  where (cratesStr,movesStr) = toTuple $ splitOn "\n\n" x
         initialState = parseCrates cratesStr
         moves = catMaybes.map parseMove $ lines movesStr
         endState = foldr (\(n,source,dest) b -> move moveFn n source dest b) initialState $ reverse moves

@@ -3,7 +3,7 @@
 module AOC2021.Day4 (run) where
 
 import Data.Function (on)
-import Data.List (groupBy, intercalate, sortBy)
+import Data.List (groupBy, sortBy)
 import Data.List.Split (splitOn)
 
 
@@ -76,13 +76,9 @@ loop (x:xs) ps step =
     (nps, Nothing) -> loop xs nps step
     (_,  res) -> res
 
-formatPanel:: Panel -> String
-formatPanel p = Data.List.intercalate "\n" (map show p)
-
 run :: String -> IO ()
 run mydata = do
-    let inputList = splitOn "\n\n" mydata
-        (instructions, panels) = readMyContent mydata
+    let (instructions, panels) = readMyContent mydata
         loadedGame = loop instructions panels
 --        panel1 = [ [(2,False), (0, True)],   [(14,False), (1, False)] ]
 --        firstS = firstWin [panel1] 2
@@ -90,5 +86,3 @@ run mydata = do
         result2 = loadedGame lastWin
     putStrLn $ "Your data is:\nFirst result: "  ++  (show result1) ++ "\nSecond result: " ++(show result2)
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"

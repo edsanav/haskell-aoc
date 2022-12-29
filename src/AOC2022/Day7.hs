@@ -1,8 +1,7 @@
 module AOC2022.Day7 (run) where
 
 import Data.List (isPrefixOf)
-import Data.List.Split (keepDelimsL, split, splitOn, whenElt)
-import Debug.Trace
+import Data.List.Split (keepDelimsL, split, whenElt)
 import Utils (formatResults)
 
 -- note "error with [IMPOSSIBLE] is just to silence pattern matching...code shohuld not go in there"

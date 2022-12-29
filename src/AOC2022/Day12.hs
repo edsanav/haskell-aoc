@@ -3,7 +3,6 @@
 module AOC2022.Day12(run) where
 import qualified Data.Map as M
 import Utils (formatResults)
-import Debug.Trace (traceShow)
 import Data.Char
 import Data.Maybe
 import qualified Data.Set as S
@@ -37,12 +36,12 @@ buildGraph::M.Map Coord Node -> M.Map Node [Node]
 buildGraph ref = foldr (\node acc-> M.insert node (findNeighbours ref node) acc) M.empty ref
 
 -- DFS doesn't necessarily finds the shortes path
-dfs::M.Map Node [Node] -> S.Set Node -> Node -> Maybe Int
-dfs _ visited (_,'E') = Just $ length visited
-dfs graph visited node
- | S.member node visited = Nothing
- | otherwise =  head $ filter isJust results
-    where results = map (dfs graph (S.insert node visited)) $ graph M.! node
+--dfs::M.Map Node [Node] -> S.Set Node -> Node -> Maybe Int
+--dfs _ visited (_,'E') = Just $ length visited
+--dfs graph visited node
+-- | S.member node visited = Nothing
+-- | otherwise =  head $ filter isJust results
+--    where results = map (dfs graph (S.insert node visited)) $ graph M.! node
 
 
 bfs::M.Map Node [Node] -> S.Set Node -> [(Node, Int)] -> Maybe Int

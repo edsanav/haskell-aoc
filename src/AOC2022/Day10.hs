@@ -1,7 +1,6 @@
 module AOC2022.Day10 (run) where
 
 import Utils (splitEveryN)
-import Debug.Trace
 
 -- First field is the value, second field (AddX) is the cycles left
 data Operation = Noop | AddX Int Int deriving (Show, Eq, Ord)

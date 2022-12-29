@@ -2,7 +2,7 @@
 
 module AOC2022.Day13(run) where
 
-import Utils (formatResults)
+import Utils (formatResults, toTuple)
 
 
 import Data.Aeson
@@ -40,7 +40,7 @@ readTree = toTree.fromJust.decode .BLU.fromString
 
 ex1:: String -> Int
 ex1  = sum. map (fst). filter (snd) . zip [1..] . map comparePackets .  splitOn ("\n\n")
-  where comparePackets = (\case (x:y:_) -> x < y ).map readTree . lines
+  where comparePackets = (\case (x,y) -> x < y ).toTuple.map readTree . lines
 
 ex2:: String -> Int
 ex2 = product . indexes dividers . allPackets
