@@ -1,9 +1,8 @@
 module AOC2022.Day14 (run) where
 
-import Data.List (minimumBy)
+import Data.List (minimumBy, maximumBy)
 import Data.List.Split (splitOn)
 import qualified Data.Set as S
-import Debug.Trace (traceShow)
 import Utils (formatResults, genList, toTuple)
 
 type Coord = (Int, Int)
@@ -25,30 +24,39 @@ nextObstacleInColumn (x0, y0) grid = nextFromTop $ S.filter (\(x, y) -> x == x0 
       | S.null coords = Nothing
       | otherwise = Just $ minimumBy (\(_, y1) (_, y2) -> compare y1 y2) $ S.toList coords
 
-potentialNextPosition :: Coord -> S.Set Coord -> Maybe Coord
-potentialNextPosition c grid = case nextObstacleInColumn c grid of
-  Nothing -> Nothing
-  Just (x1,y1) | not $ S.member (x1-1,y1)  grid -> potentialNextPosition (x1-1, y1) grid -- left side free
-  Just (x1,y1) | not $ S.member (x1+1,y1)  grid -> potentialNextPosition (x1+1, y1) grid -- right side free
+currentAndNextPosition :: Coord -> S.Set Coord -> (Coord, Maybe Coord)
+currentAndNextPosition c grid = case nextObstacleInColumn c grid of
+  Nothing -> (c, Nothing)
+  Just (x1,y1) | not $ S.member (x1-1,y1)  grid -> currentAndNextPosition (x1-1, y1) grid -- left side free
+  Just (x1,y1) | not $ S.member (x1+1,y1)  grid -> currentAndNextPosition (x1+1, y1) grid -- right side free
   Just c1 | c == c1 -> error "THIS SHOULD NOT HAPPEN"
-  Just (x1,y1) -> Just (x1, y1-1)
+  Just (x1,y1) -> (c, Just (x1, y1-1))
 
 dropSand:: Coord -> S.Set Coord -> Int
 dropSand orig grid = go grid 0
   where
-    go currentGrid acc = case potentialNextPosition orig currentGrid of
-      Nothing -> acc
-      Just newPoint -> go (S.insert newPoint currentGrid) acc + 1
+    go currentGrid acc = case currentAndNextPosition orig currentGrid of
+      (_, Nothing) -> acc
+      (_, Just newPoint) -> go (S.insert newPoint currentGrid) acc + 1
+
+dropSandWithFloor:: Int -> Coord -> S.Set Coord -> Int
+dropSandWithFloor yFloor orig grid = go grid 0
+  where
+    go currentGrid acc = case currentAndNextPosition orig currentGrid of
+      (_, Just (500,0))  -> acc + 1
+      ((currentX, _), Nothing) -> go (S.insert (currentX, yFloor) currentGrid) acc -- Set the floor for that column
+      (_, Just newPoint) -> go (S.insert newPoint currentGrid) acc + 1
 
 
 ex1 :: String -> Int
 ex1 x = dropSand (500,0) grid
   where grid = S.unions . map parseRockblock $ lines x
-        extra = S.fromList [(500,8), (499,8), (501,8)]
-        test = potentialNextPosition (500,0) $ S.union extra grid
 
 ex2 :: String -> Int
-ex2 _ = 0
+ex2 x = dropSandWithFloor yFloor (500,0) grid
+  where grid = S.unions . map parseRockblock $ lines x
+        yFloor = (+2).snd.maximumBy (\(_, y1) (_, y2) -> compare y1 y2) $ S.toList grid
+
 
 run :: String -> IO ()
 run x = putStr $ formatResults (ex1 x) (ex2 x)
