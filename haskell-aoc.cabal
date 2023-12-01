@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.0.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -40,6 +40,7 @@ library
       AOC2022.Day7
       AOC2022.Day8
       AOC2022.Day9
+      AOC2023.Day1
       Command
       Utils
   other-modules:
