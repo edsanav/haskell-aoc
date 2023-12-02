@@ -30,6 +30,7 @@ dependencies:
 - utf8-string
 - vector
 - scientific
+- regex-tdfa
 
 ghc-options:
 - -Wall

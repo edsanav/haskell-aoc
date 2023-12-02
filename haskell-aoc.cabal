@@ -41,6 +41,7 @@ library
       AOC2022.Day8
       AOC2022.Day9
       AOC2023.Day1
+      AOC2023.Day2
       Command
       Utils
   other-modules:
@@ -54,6 +55,7 @@ library
     , bytestring
     , containers
     , optparse-applicative
+    , regex-tdfa
     , scientific
     , split
     , text
@@ -73,6 +75,7 @@ executable aoc
     , containers
     , haskell-aoc
     , optparse-applicative
+    , regex-tdfa
     , scientific
     , split
     , text
@@ -95,6 +98,7 @@ test-suite haskell-aoc-test
     , containers
     , haskell-aoc
     , optparse-applicative
+    , regex-tdfa
     , scientific
     , split
     , text
