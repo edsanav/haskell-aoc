@@ -1,4 +1,4 @@
-module Utils (formatResults, splitEveryN, toTuple, genList) where
+module Utils (formatResults, splitEveryN, toTuple, genList, indexRows) where
 
 -- https://stackoverflow.com/questions/3232074/what-is-the-best-way-to-convert-string-to-bytestring
 
@@ -13,6 +13,9 @@ splitEveryN n x = case splitAt n x of
 toTuple::[a] -> (a,a)
 toTuple (x:y:_) = (x,y)
 toTuple _ = error $ "Trying to convert a list shorter than 2 to a tuple"
+
+indexRows::String -> [(Int, String)]
+indexRows  = zip [0 :: Int ..] . lines
 
 genList::Int->Int->[Int]
 genList x1 x2 = if (x1<=x2)
