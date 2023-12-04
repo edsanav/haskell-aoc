@@ -1,5 +1,7 @@
-module Utils (formatResults, splitEveryN, toTuple, genList, indexRows) where
+module Utils (formatResults, splitEveryN, toTuple, genList, indexRows, getMatch) where
 
+import Text.Regex.TDFA
+import Text.Regex.TDFA.Text ()
 -- https://stackoverflow.com/questions/3232074/what-is-the-best-way-to-convert-string-to-bytestring
 
 formatResults::(Show a, Show b) => a -> b -> String
@@ -21,3 +23,11 @@ genList::Int->Int->[Int]
 genList x1 x2 = if (x1<=x2)
                  then [x1..x2]
                  else [x1,x1-1..x2]
+
+getMatches :: String -> String -> [String]
+getMatches input pattern = matchList
+  where
+    (_, _, _, matchList) = (input =~ pattern) :: (String, String, String, [String])
+
+getMatch :: String -> String -> String
+getMatch pattern input = head $ getMatches pattern input

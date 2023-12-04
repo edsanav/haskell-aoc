@@ -6,7 +6,7 @@ import qualified Data.Map as M
 import Data.Text (pack, splitOn, unpack)
 import Text.Regex.TDFA
 import Text.Regex.TDFA.Text ()
-import Utils (formatResults)
+import Utils (formatResults, getMatch)
 
 -- https://hackage.haskell.org/package/regex-tdfa-1.2.3.2/docs/Text-Regex-TDFA.html
 
@@ -14,15 +14,10 @@ data Cube = Red | Green | Blue deriving (Show, Eq, Ord)
 
 data Game = Game {gameId :: Int, sets :: [M.Map Cube Int]} deriving (Show, Eq, Ord)
 
-getMatch :: String -> String -> String
-getMatch pattern input = head matchList
-  where
-    (_, _, _, matchList) = (input =~ pattern) :: (String, String, String, [String])
-
 readSet :: String -> M.Map Cube Int
 readSet input = M.fromList [reds, blues, greens]
   where
-    readColorOr0 pattern inp = if (inp =~ pattern :: Bool) then read $ getMatch pattern inp else 0
+    readColorOr0 pattern inp = if (inp =~ pattern :: Bool) then read $ getMatch inp pattern else 0
     reds = (Red, readColorOr0 "([0-9]*) red" input)
     blues = (Blue, readColorOr0 "([0-9]*) blue" input)
     greens = (Green, readColorOr0 "([0-9]*) green" input)
@@ -30,7 +25,7 @@ readSet input = M.fromList [reds, blues, greens]
 readGameLine :: String -> Game
 readGameLine input = Game gameId (map readSet gameSets)
   where
-    gameId = read $ getMatch "Game (.*)\\:" input :: Int
+    gameId = read $ getMatch input "Game (.*)\\:" :: Int
     setsBlock = head $ tail $ splitOn ":" (pack input)
     gameSets = map unpack $ splitOn ";" setsBlock
 
