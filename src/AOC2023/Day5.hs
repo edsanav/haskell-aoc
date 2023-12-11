@@ -14,6 +14,12 @@ data Mapping = Mapping{source::Category, dest::Category, mapping::Int -> Int}
 readSeeds:: String -> [Int]
 readSeeds = map read.tail.words
 
+readSeedRanges::String -> [Int]
+readSeedRanges = readRange . readSeeds
+  where readRange (x:y:xs) = [x..(x+y-1)] ++ readRange xs 
+        readRange [] = []
+        readRange [_] = error "this should not happen"
+
 readBlock::String -> Mapping
 readBlock input = Mapping s d (createMapFun readNumbersInput)
   where 
@@ -34,19 +40,22 @@ readBlock input = Mapping s d (createMapFun readNumbersInput)
                                               else createMapFun xs x
 
 
-translate::  [Int] -> Mapping -> [Int]
-translate input m = map (mapping m) input
+composeFinalFunction::[Mapping] -> Int -> Int
+composeFinalFunction allMaps = foldl (flip (.)) id $ map mapping allMaps
 
 ex1 :: String -> [String] -> Int
-ex1 seedline blocksStr = minimum $ foldl translate seeds maps
+ex1 seedline blocksStr = minimum $ map finalFunc seeds
   where seeds = readSeeds seedline
-        maps = map readBlock blocksStr
+        finalFunc = composeFinalFunction $ map readBlock blocksStr
 
-ex2 :: String -> Int
-ex2 = undefined
+ex2 :: String -> [String]  -> Int
+ex2 seedline blocksStr = minimum $ map finalFunc seeds
+  where seeds = readSeedRanges seedline
+        finalFunc = composeFinalFunction $ map readBlock blocksStr
+
 
 run :: String -> IO ()
-run x = putStr $ formatResults (ex1 seedsline blocksStr) (ex2 x)
+run x = putStr $ formatResults (ex1 seedsline blocksStr) (ex2 seedsline blocksStr)
   where 
     (seedsline, blocksStr) = case splitOn "\n\n" x of 
       (seeds:rest) -> (seeds, rest)
