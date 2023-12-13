@@ -1,15 +1,7 @@
 module AOC2023.Day5 (run) where
 
-
-import Debug.Trace
-import qualified Data.Map as M
-import Utils (formatResults, toTuple)
+import Utils (formatResults)
 import Data.List.Split (splitOn)
-
-data Category = Seed | Soil | Fertilizer | Water | Light | Temperature | Humidity | Location deriving (Show, Eq, Ord)
-data Mapping = Mapping{source::Category, dest::Category, mapping::Int -> Int}
-
-
 
 readSeeds:: String -> [Int]
 readSeeds = map read.tail.words
@@ -20,17 +12,9 @@ readSeedRanges = readRange . readSeeds
         readRange [] = []
         readRange [_] = error "this should not happen"
 
-readBlock::String -> Mapping
-readBlock input = Mapping s d (createMapFun readNumbersInput)
+readBlock::String -> Int -> Int
+readBlock input = createMapFun readNumbersInput
   where 
-    (s, d) = case head $ lines input of
-      "seed-to-soil map:" -> (Seed, Soil)
-      "soil-to-fertilizer map:" -> (Soil, Fertilizer)
-      "fertilizer-to-water map:" -> (Fertilizer, Water)
-      "water-to-light map:" -> (Water, Light)
-      "temperature-to-humidity map:" -> (Temperature, Humidity)
-      "humidity-to-location map:" -> (Humidity, Location)
-      _ -> error "unknown block"
     toNumbersInput (dest:source:interval:_) = (dest,source,interval)
     toNumbersInput _ = error "this should not happen"
     readNumbersInput = map (toNumbersInput . map (read::String->Int) . words) $  tail.lines $ input
@@ -38,10 +22,22 @@ readBlock input = Mapping s d (createMapFun readNumbersInput)
     createMapFun ((dest, source, len):xs) x = if (source <= x) && x <= source+(len-1) 
                                               then dest+(x-source)
                                               else createMapFun xs x
+-- y - dest + source  = x
+readBlockReverse::String -> Int -> Int
+readBlockReverse input = createMapFun readNumbersInput
+  where
+    toNumbersInput (dest:source:interval:_) = (dest,source,interval)
+    toNumbersInput _ = error "this should not happen"
+    readNumbersInput = map (toNumbersInput . map (read::String->Int) . words) $  tail.lines $ input
+    createMapFun [] x = x 
+    createMapFun ((dest, source, len):xs) y = let x = y - dest + source
+                                              in if (source <= x) && x <= source+(len-1) 
+                                                 then x
+                                                 else createMapFun xs y
 
 
-composeFinalFunction::[Mapping] -> Int -> Int
-composeFinalFunction allMaps = foldl (flip (.)) id $ map mapping allMaps
+composeFinalFunction::[Int -> Int] -> Int -> Int
+composeFinalFunction = foldl (flip (.)) id
 
 ex1 :: String -> [String] -> Int
 ex1 seedline blocksStr = minimum $ map finalFunc seeds
@@ -49,9 +45,10 @@ ex1 seedline blocksStr = minimum $ map finalFunc seeds
         finalFunc = composeFinalFunction $ map readBlock blocksStr
 
 ex2 :: String -> [String]  -> Int
-ex2 seedline blocksStr = minimum $ map finalFunc seeds
+ex2 seedline blocksStr = finalFunc 46
+--ex2 seedline blocksStr = minimum $ map finalFunc seeds
   where seeds = readSeedRanges seedline
-        finalFunc = composeFinalFunction $ map readBlock blocksStr
+        finalFunc = composeFinalFunction $ reverse $ map readBlockReverse blocksStr
 
 
 run :: String -> IO ()
