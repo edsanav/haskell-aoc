@@ -37,8 +37,8 @@ countBetterTimes (maxT, distT) = length [t | t <- [1..(maxT-1)], isValidHoldTime
 ex1 :: String -> Int
 ex1  = product.map countBetterTimes.parseSeparated
 
-ex2 :: String -> (Int,Int)
-ex2 inpt = parseTogether inpt
+ex2 :: String -> Int
+ex2 = countBetterTimes.parseTogether
 
 run :: String -> IO ()
 run x = putStr $ formatResults (ex1 x) (ex2 x)
