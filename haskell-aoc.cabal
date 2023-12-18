@@ -46,6 +46,7 @@ library
       AOC2023.Day4
       AOC2023.Day5
       AOC2023.Day6
+      AOC2023.Day7
       Command
       Utils
   other-modules:
