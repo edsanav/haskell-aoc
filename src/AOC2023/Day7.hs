@@ -56,3 +56,5 @@ ex2 = undefined
 
 run :: String -> IO ()
 run x = putStr $ formatResults (ex1 x) (ex2 x)
+
+-- TODO include one pair
